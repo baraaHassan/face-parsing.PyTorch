@@ -79,4 +79,4 @@ def evaluate(respth='./res/test_res', dspth='./data', cp='model_final_diss.pth')
             vis_parsing_maps(image, parsing, stride=1, save_im=True, save_path=osp.join(respth, image_path))
 
 if __name__ == "__main__":
-    evaluate(dspth='./data', cp='79999_iter.pth')
+    evaluate(dspth='./data/ilyassCloseUp/', cp='79999_iter.pth')
