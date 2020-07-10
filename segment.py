@@ -48,7 +48,7 @@ def vis_parsing_maps(im, parsing_anno, stride, save_im=False, save_path='vis_res
 
     # return vis_im
 
-def evaluate(respth='./res/test_res', dspth='./data', cp='model_final_diss.pth'):
+def evaluate(respth='./res/test_res', dspth='./data', cp='model_final_diss.pth', return_parsings=False):
 
     if not os.path.exists(respth):
         os.makedirs(respth)
@@ -64,19 +64,35 @@ def evaluate(respth='./res/test_res', dspth='./data', cp='model_final_diss.pth')
         transforms.ToTensor(),
         transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)),
     ])
-    with torch.no_grad():
-        for image_path in os.listdir(dspth):
-            img = Image.open(osp.join(dspth, image_path))
-            image = img.resize((512, 512), Image.BILINEAR)
-            img = to_tensor(image)
-            img = torch.unsqueeze(img, 0)
-            img = img.cuda()
-            out = net(img)[0]
-            parsing = out.squeeze(0).cpu().numpy().argmax(0)
-            # print(parsing)
-            print(np.unique(parsing))
 
-            vis_parsing_maps(image, parsing, stride=1, save_im=True, save_path=osp.join(respth, image_path))
+    if return_parsings:
+        parsings = list()
+        with torch.no_grad():
+            for image_path in os.listdir(dspth):
+                img = Image.open(osp.join(dspth, image_path))
+                image = img.resize((512, 512), Image.BILINEAR)
+                img = to_tensor(image)
+                img = torch.unsqueeze(img, 0)
+                img = img.cuda()
+                out = net(img)[0]
+                parsing = out.squeeze(0).cpu().numpy().argmax(0)
+                parsings.append(parsing)
+        return parsings
+    
+    else:
+        with torch.no_grad():
+            for image_path in os.listdir(dspth):
+                img = Image.open(osp.join(dspth, image_path))
+                image = img.resize((512, 512), Image.BILINEAR)
+                img = to_tensor(image)
+                img = torch.unsqueeze(img, 0)
+                img = img.cuda()
+                out = net(img)[0]
+                parsing = out.squeeze(0).cpu().numpy().argmax(0)
+                # print(parsing)
+                # print(np.unique(parsing))
+
+                vis_parsing_maps(image, parsing, stride=1, save_im=True, save_path=osp.join(respth, image_path))
 
 if __name__ == "__main__":
     evaluate(dspth='./data/ilyassCloseUp/', cp='79999_iter.pth')
