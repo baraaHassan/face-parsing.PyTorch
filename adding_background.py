@@ -71,6 +71,6 @@ def evaluate(respth='./res/test_res', dspth='./data', cp='model_final_diss.pth')
     print("all frames are done")
     outputvideo = np.array(outputvideo)
     #output = np.ndarray(outputvideo)
-    skvideo.io.vwrite("./data/outputvideo.mp4", outputvideo.astype(np.uint8))
+    skvideo.io.vwrite("./data/outputvideo2.mp4", outputvideo.astype(np.uint8))
 if __name__ == "__main__":
-    evaluate(dspth='./data/baraa/', cp='79999_iter.pth')
+    evaluate(dspth='./data/ilyassCloseUp', cp='79999_iter.pth')
